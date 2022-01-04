@@ -62,7 +62,7 @@ body {
     background-color: #1f2833;
     color: #c5c6c7;
     /* gradient, comma, then image */
-    background-image: linear-gradient(to right bottom, rgba(64, 64, 64, 0.9), rgba(0, 0, 0, 0.9)), url(../_img/code-curve.jpeg);
+    background-image: linear-gradient(to right bottom, rgba(64, 64, 64, 0.9), rgba(0, 0, 0, 0.9)), url(../_img/wargames-bg.jpg);
     /* takes up full width of viewport */
     background-size: cover;
     /* top of image will always stay at top of screen when resizing */
@@ -112,7 +112,7 @@ body {
     justify-content: center;
     align-self: center;
     flex-basis: 80%;
-    color: #499953;
+    color: #3ee052;
     font-size: 5rem;
 }
 
@@ -145,7 +145,7 @@ h1 {
     margin-bottom: 20px;
     border-bottom: 2px solid #776a6a;
     font-size: 3rem;
-    background: linear-gradient(to bottom, #b9b9b9 0%, #ff8400 100%);
+    background: linear-gradient(to bottom, #2f8c00 0%, #02ff00 100%); 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -242,7 +242,7 @@ ___________________________________________________*/
 }
 
 .navbar .nav-active {
-    color: rgb(224, 151, 56);
+    color: rgb(0 243 255);
 }
 
 
@@ -290,7 +290,7 @@ ___________________________________________________*/
 .example {
     background: rgba(0, 0, 0, 0.7);
     padding: 1rem;
-    overflow: scroll;
+    overflow: auto;
 }
 
 
@@ -313,6 +313,10 @@ ___________________________________________________*/
 
 .code-react {
     color: #61dafb;
+}
+
+.code-nodejs {
+  color: #21dc64;
 }
 
 .code-comment {
