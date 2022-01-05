@@ -2,41 +2,77 @@
 <html lang="en">
 
 <head>
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" type="text/css" href="../../_css/styles.css">
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" type="text/css" href="../../_css/styles.css">
 
-    <title>Node.js Overview</title>
+  <title>Node.js Overview</title>
 </head>
 
 <body>
 
 
-<nav class="navbar">
+  <nav class="navbar">
     <a href="../../index.html">Back to homepage</a>
     <a class="nav-page nav-active">Node.js Overview</a>
-</nav>
+  </nav>
 
 
-<h1>When to use Node.js</h1>
-<div class="text-section">
-  <img src="../../_img/when-to-use-nodejs.png" width="850px">
-    <p>......</p>
-</div>
+  <h1>When to use Node.js</h1>
+  <div class="text-section">
+    <img src="../../_img/when-to-use-nodejs.png" width="850px">
+  </div>
 
 
-<h2>Code section</h2>
-<section class="code-section-container">
+
+
+
+  <h1>Node.js processes</h1>
+  <div class="text-section">
+    <p>Node.js is single threaded (only 1 process running).</p>
+    <img src="../../_img/synchronous.png" width="550px">
+    <p>All users accessing your app are accessing the same thread.</p>
+
+    <img src="../../_img/blocked.png" width="550px">
+    <p>This means if a user blocks a thread, all other users must wait until its execution finishes.</p>
+    <img src="../../_img/asynchronous.png" width="550px">
+    <p>With asynchronous code, the users are not blocked in a single thread since the longer running process is
+      executing in the background.</p>
+    <p>When finished exeucting in the background, a callback function is run.</p>
+
+
+
+
+
+
+  </div>
+
+
+
+
+
+
+
+
+
+  <h2>Code section</h2>
+  <section class="code-section-container">
     <div class="code-text-section">
-        <p>......</p>
+      <p>......</p>
     </div>
 
     <div class="code-block-section-w60">
-        <pre class="example"><span class="code-nodejs">......    </span></pre>
+      <pre class="example"><span class="code-nodejs">......    </span></pre>
     </div>
-</section>
+  </section>
+
+
+
+
+
 
 
 </body>
+
 </html>
