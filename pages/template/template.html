@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" type="text/css" href="../../_css/styles.css">
+
+  <title>API</title>
+</head>
+
+<body>
+
+
+  <nav class="navbar">
+    <a href="../../index.html">Back to homepage</a>
+    <a class="nav-page nav-active">Template</a>
+  </nav>
+
+
+
+
+
+
+
+  <h1>Template</h1>
+
+  
+    <div class="text-section">
+      <p>Create an HTML page.</p>
+      <p>Instead of assigning specific names like <span class="text-object">Fresh Avocados</span>, add a template string.</p>
+      <p>For example: <span class="code">{%PRODUCTNAME%} </span></p>
+    </div>
+
+    <section class="code-section-container">
+    <div class="code-block-section-w100">
+<pre class="example"><span class="code-html">&lt;!DOCTYPE html&gt;
+  &lt;html lang="en"&gt;
+    &lt;head&gt;
+      &lt;meta charset="UTF-8" /&gt;
+      &lt;meta name="viewport" content="width=device-width, initial-scale=1.0" /&gt;
+      &lt;meta http-equiv="X-UA-Compatible" content="ie=edge" /&gt;
+      &lt;link
+        href="https://fonts.googleapis.com/css?family=Megrim|Nunito+Sans:400,900"
+        rel="stylesheet"
+      /&gt;
+      &lt;link
+        rel="icon"
+        href="https://emojipedia-us.s3.dualstack.us-west-1.amazonaws.com/thumbs/240/apple/155/ear-of-maize_1f33d.png"
+      /&gt;
+      &lt;title&gt;<span class="code-highlight">{%PRODUCTNAME%} {%IMAGE%}</span> /// NODE FARM&lt;/title&gt;
+    &lt;/head&gt;
+  
+    &lt;body&gt;
+      &lt;div class="container"&gt;
+        &lt;h1&gt;🌽 Node Farm 🥦&lt;/h1&gt;
+  
+        &lt;figure class="product"&gt;
+          &lt;div class="product__organic <span class="code-highlight">{%NOT_ORGANIC%}</span>"&gt;&lt;h5&gt;Organic&lt;/h5&gt;&lt;/div&gt;
+          
+          &lt;a href="/overview" class="product__back"&gt;
+            &lt;span class="emoji-left"&gt;👈&lt;/span&gt;Back
+          &lt;/a&gt;
+  
+          &lt;div class="product__hero"&gt;
+            &lt;span class="product__emoji product__emoji--1"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+            &lt;span class="product__emoji product__emoji--2"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+            &lt;span class="product__emoji product__emoji--3"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+            &lt;span class="product__emoji product__emoji--4"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+            &lt;span class="product__emoji product__emoji--5"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+            &lt;span class="product__emoji product__emoji--6"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+            &lt;span class="product__emoji product__emoji--7"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+            &lt;span class="product__emoji product__emoji--8"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+            &lt;span class="product__emoji product__emoji--9"&gt;<span class="code-highlight">{%IMAGE%}</span>&lt;/span&gt;
+          &lt;/div&gt;
+  
+          &lt;h2 class="product__name"&gt;<span class="code-highlight">{%PRODUCTNAME%}</span>&lt;/h2&gt;
+          &lt;div class="product__details"&gt;
+            &lt;p&gt;&lt;span class="emoji-left"&gt;🌍&lt;/span&gt;From <span class="code-highlight">{%FROM%}</span>&lt;/p&gt;
+            &lt;p&gt;&lt;span class="emoji-left"&gt;❤️&lt;/span&gt;<span class="code-highlight">{%NUTRIENTS%}</span>&lt;/p&gt;
+            &lt;p&gt;&lt;span class="emoji-left"&gt;📦&lt;/span&gt;<span class="code-highlight">{%QUANTITY%}</span>&lt;/p&gt;
+            &lt;p&gt;&lt;span class="emoji-left"&gt;🏷&lt;/span&gt;<span class="code-highlight">{%PRICE%}</span>€&lt;/p&gt;
+          &lt;/div&gt;
+    
+          &lt;a href="#" class="product__link"&gt;
+            &lt;span class="emoji-left"&gt;🛒&lt;/span&gt;
+            &lt;span&gt;Add to shopping card (<span class="code-highlight">{%PRICE%}</span>€)&lt;/span&gt;
+          &lt;/a&gt;
+    
+          &lt;p class="product__description"&gt;
+          <span class="code-highlight">{%DESCRIPTION%}</span>
+          &lt;/p&gt;
+        &lt;/figure&gt;
+        
+      &lt;/div&gt;
+    &lt;/body&gt;
+  &lt;/html&gt;
+  </span></pre>
+</div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>
