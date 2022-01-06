@@ -7,7 +7,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" type="text/css" href="../../_css/styles.css">
 
-  <title>API</title>
+  <title>Templating</title>
 </head>
 
 <body>
@@ -15,7 +15,7 @@
 
   <nav class="navbar">
     <a href="../../index.html">Back to homepage</a>
-    <a class="nav-page nav-active">Template</a>
+    <a class="nav-page nav-active">Templating</a>
   </nav>
 
 
@@ -24,16 +24,88 @@
 
 
 
-  <h1>Template</h1>
-
+  <h1>Templating</h1>
+  <h2>Simple example</h2>
 
   <div class="text-section">
-    <p>Create an HTML page.</p>
-    <p>Instead of assigning specific names like <span class="text-object">Fresh Avocados</span>, add a template string.
-    </p>
-    <p>For example: <span class="code">{%PRODUCTNAME%} </span></p>
+    <p>This creates a single HTML page with a single template string.</p>
+    <p>The template string is then replaced by text.</p>
   </div>
 
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <ol>
+        <li>Create an HTML page with a single template string <span class="code">{%PRODUCT_CARDS%}</span>.</li>
+        <li>Create a variable named <span class="code">tempOverview</span> to read the contents of <span
+            class="text-object">template.html</span>.</li>
+        <li>Create a server.</li>
+        <li>Set the HTML Header so the web page can display the data.</li>
+        <li>Read the file stored in <span class="code">tempOverview</span> and use <span class="code">replace()</span>
+          to replace the template string with text.</li>
+        <li>Run <span class="code">res.end(output)</span> to display the result.</li>
+      </ol>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-html">&lt;div class="container"&gt;
+  &lt;h1&gt;🌽 Node Farm 🥦&lt;/h1&gt;
+  &lt;div class="cards-container"&gt;
+    <span class="code-nodejs">{%PRODUCT_CARDS%}</span>
+  &lt;/div&gt;
+&lt;/div&gt;</span>
+
+
+
+<span class="code-nodejs">const fs = require('fs');
+const http = require('http');
+const <span class="code-highlight">tempOverview</span> = fs.readFileSync(`${__dirname}/templates/template.html`, 'utf-8');
+
+
+<span class="code-comment">// SERVER </span>
+const server = http.createServer((req, res) => { 
+   <span class="code-highlight">res.writeHead(200, { 'Content-type': 'text/html'</span> });
+   const <span class="code-highlight">output</span> = <span class="code-highlight">tempOverview.replace('{%PRODUCT_CARDS%}', "This text replaces the template");
+   res.end(output);</span>
+});
+
+server.listen(8000, '127.0.0.1', () => {
+  console.log('Listening to requests on port 8000');
+});</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h1>Advanced example</h1>
+  <h2>Overview page</h2>
+
+<section class="code-section-container">   
+<div class="code-block-section-w100">
+<pre class="example"><span class="code-html"><span class="code-html">&lt;div class="container"&gt;
+  &lt;h1&gt;🌽 Node Farm 🥦&lt;/h1&gt;
+  &lt;div class="cards-container"&gt;
+    <span class="code-nodejs">{%PRODUCT_CARDS%}</span>
+  &lt;/div&gt;
+&lt;/div&gt;</span></span></pre>
+</div>
+  </section>
+
+
+
+<h2>Product page</h2>
   <section class="code-section-container">
     <div class="code-block-section-w100">
       <pre class="example"><span class="code-html">&lt;!DOCTYPE html&gt;
@@ -100,6 +172,40 @@
   </span></pre>
     </div>
   </section>
+
+
+
+
+  <h2>Card page</h2>
+
+  <section class="code-section-container">   
+<div class="code-block-section-w100">
+<pre class="example"><span class="code-html">&lt;figure class="card"&gt;
+  &lt;div class="card__emoji"&gt;<span class="code-highlight">{%IMAGE%}{%IMAGE%}</span>&lt;/div&gt;
+  &lt;div class="card__title-box"&gt;
+    &lt;h2 class="card__title"&gt;<span class="code-highlight">{%PRODUCTNAME%}</span>&lt;/h2&gt;
+  &lt;/div&gt;
+
+  &lt;div class="card__details"&gt;
+    &lt;div class="card__detail-box <span class="code-highlight">{%NOT_ORGANIC%}</span>"&gt;
+        &lt;h6 class="card__detail card__detail--organic"&gt;Organic!&lt;/h6&gt;
+    &lt;/div&gt;
+
+    &lt;div class="card__detail-box"&gt;
+      &lt;h6 class="card__detail"&gt;<span class="code-highlight">{%QUANTITY%}</span> per 📦&lt;/h6&gt;
+    &lt;/div&gt;
+      
+    &lt;div class="card__detail-box"&gt;
+      &lt;h6 class="card__detail card__detail--price"&gt;<span class="code-highlight">{%PRICE%}</span>€&lt;/h6&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+
+  &lt;a class="card__link" href="/product?id=<span class="code-highlight">{%ID%}</span>"&gt;
+    &lt;span&gt;Detail &lt;i class="emoji-right"&gt;👉&lt;/i&gt;&lt;/span&gt;
+  &lt;/a&gt;
+&lt;/figure&gt;</span></pre>
+</div>
+    </section>
 
 
 
@@ -192,8 +298,9 @@ const replaceTemplate = (temp, product) => {
 };</span>
 
 
-<span class="code-comment">// SERVER 
-<span class="code-highlight"><span class="code-comment">// use the url module and .parse property to extract the current URL being viewed.
+<span class="code-comment">// SERVER </span>
+const server = http.createServer((req, res) => {
+<span class="code-comment">// use the url module and .parse property to extract the current URL being viewed.
 // Destruture
 // query is the string after the page name. For example: id: '1'. This appears in the URL as: /product?id=1
 // pathname is the page name: /product</span>
@@ -261,48 +368,6 @@ server.listen(8000, '127.0.0.1', () => {
 
 
 
-  <h1>Create and Import a module</h1>
-
-  <h2>Create the module</h2>
-  <section class="code-section-container">
-    <div class="code-text-section">
-      <p>The replaceTemplate function could be added as a module so you can use it in multiple files.</p>
-      <p>In Node.js, all files are treated as a module.</p>
-      <p>Create a new file named <span class="code">replaceTemplate</span>. Place the function code within it.</p>
-      <p>To export it, add <span class="code">module.exports</span> where the variable name used to be.</p>
-    </div>
-    <div class="code-block-section-w60">
-      <pre class="example"><span class="code-nodejs"><span class="code-highlight">module.exports</span> = (temp, product) => {
-let output = temp.replace(/{%PRODUCTNAME%}/g, product.productName);
-output = output.replace(/{%IMAGE%}/g, product.image);
-output = output.replace(/{%PRICE%}/g, product.price);
-output = output.replace(/{%FROM%}/g, product.from);
-output = output.replace(/{%NUTRIENTS%}/g, product.nutrients);
-output = output.replace(/{%QUANTITY%}/g, product.quantity);
-output = output.replace(/{%DESCRIPTION%}/g, product.description);
-output = output.replace(/{%ID%}/g, product.id);
-
-if(!product.organic) output = output.replace(/{%NOT_ORGANIC%}/g, 'not-organic');
-return output;}</span></pre>
-    </div>
-  </section>
-
-
-
-<h2>Import the module</h2>
-  <section class="code-section-container">
-    <div class="code-text-section">
-      <p>Add a <span class="code">require</span> at the top of your index.js file.</p>
-    </div>
-    <div class="code-block-section-w60">
-      <pre class="example"><span class="code-nodejs">const replaceTemplate = require('./modules/replaceTemplate');</span></pre>
-    </div>
-  </section>
-
-
-
-
-  
 
 
 
