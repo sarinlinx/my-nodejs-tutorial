@@ -2,18 +2,8 @@
 You can then use them using the var() property as shown below */
 
  :root {
-    --color-primary: #eb2f64;
-    --color-primary-light: #FF3366;
-    --color-primary-dark: #BA265D;
-    --color-grey-light-1: #faf9f9;
-    --color-grey-light-2: #f4f2f2;
-    --color-grey-light-3: #f0eeee;
-    --color-grey-light-4: #ccc;
-    --color-grey-dark-1: #333;
-    --color-grey-dark-2: #777;
-    --color-grey-dark-3: #999;
+    --color-nodejs: #64de64;
     --shadow-dark: 0 2rem 6rem rgba(0, 0, 0, 0.3);
-    --shadow-light: 0 2rem 5rem rgba(0, 0, 0, 0.06);
     --line: 1px solid var(--color-grey-light-2)
 }
 
@@ -146,8 +136,7 @@ h1 {
     margin-bottom: 20px;
     border-bottom: 2px solid #776a6a;
     font-size: 3rem;
-    background: linear-gradient(to bottom, #2f8c00 0%, #02ff00 100%);
-    100%);
+    background: linear-gradient(to bottom, #64de64 0%, #2f8c00 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -159,20 +148,21 @@ h2 {
     background: linear-gradient(to bottom, #daf6ff 0%, #0074c9 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
+    display: inline-block;
 }
 
 h3 {
     margin-top: 1rem;
-    font-size: 1.5rem;
-    background: linear-gradient(to bottom, #91ffe0 0%, #00811a 100%);
+    font-size: 1.7rem;
+    background: linear-gradient(to bottom, #ffffff 0%, #9100ff 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 h4 {
     margin-top: 2rem;
-    font-size: 1.3rem;
-    background: linear-gradient(to bottom, #a4a4a4 0%, #ff3f3f 100%);
+    font-size: 1.4rem;
+    background: linear-gradient(to bottom, #ffffff 0%, #ff0000 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -180,7 +170,7 @@ h4 {
 h5 {
     margin-top: 2rem;
     font-size: 1.2rem;
-    background: linear-gradient(to bottom, #bdbdbd 0%, #b2b2b2 100%);
+    background: linear-gradient(to bottom, #ffffff 0%, #817458 100%);
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
@@ -229,7 +219,7 @@ ___________________________________________________*/
     /* text-align: center; */
     padding: 14px 16px;
     text-decoration: none;
-    font-size: 17px;
+    /* font-size: 17px; */
     /* transition: color 2s; */
 }
 
@@ -256,6 +246,10 @@ ul {
     margin: .5rem 0 1rem 2rem;
 }
 
+ol {
+    margin: .5rem 0 1rem 1rem;
+}
+
 
 /*___________________________________________________
 Code Section
@@ -279,7 +273,7 @@ ___________________________________________________*/
     color: #b0cad4;
     /* border: 1px solid red; */
     justify-content: space-between;
-    font-size: 15px;
+    /* font-size: 15px; */
 }
 
 .code-output-container {
@@ -338,22 +332,22 @@ ___________________________________________________*/
 
 .code-nodejs {
     color: #64de64;
-    font-size: .9rem;
+    /* font-size: .9rem; */
 }
 
 .code-comment {
     color: gray;
-    font-size: .9rem;
+    /* font-size: .9rem; */
 }
 
 .code-output {
     color: #9c9c9c;
-    font-size: 1rem;
+    /* font-size: 1rem; */
 }
 
 .code-highlight {
     font-weight: bolder;
-    font-size: 1rem;
+    /* font-size: 1rem; */
     color: #00ff93;
     ;
 }
@@ -370,11 +364,12 @@ ___________________________________________________*/
     border: 1px solid #b2cdff;
     border-radius: 2px;
     padding: 1px 4px;
+    white-space: nowrap;
 }
 
 .text-object {
     color: #fff;
-    font-size: 1.1rem;
+    /* font-size: 1.1rem; */
 }
 
 
