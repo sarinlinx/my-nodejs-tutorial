@@ -28,44 +28,186 @@
 
 
 
-  <h1>Node.js processes</h1>
+  <h1>Overview</h1>
   <div class="text-section">
     <p>Node.js is single threaded (only 1 process running).</p>
-    <img src="../../_img/synchronous.png" width="550px">
+    <img src="../../_img/synchronous.png" width="450px">
     <p>All users accessing your app are accessing the same thread.</p>
 
-    <img src="../../_img/blocked.png" width="550px">
+    <img src="../../_img/blocked.png" width="450px">
     <p>This means if a user blocks a thread, all other users must wait until its execution finishes.</p>
-    <img src="../../_img/asynchronous.png" width="550px">
+    <img src="../../_img/asynchronous.png" width="450px">
     <p>With asynchronous code, the users are not blocked in a single thread since the longer running process is
       executing in the background.</p>
     <p>When finished exeucting in the background, a callback function is run.</p>
-
-
-
-
-
 
   </div>
 
 
 
 
+  <h1>Node Architecture</h1>
+
+  <h2>Node dependencies</h2>
+
+  <div class="text-section">
+    <p>Node has several dependencies, but the most important are:</p>
+    <ul>
+      <li>V8 engine</li>
+      <li>libuv</li>
+    </ul>
+    <img src="../../_img/node-architecture.png" width="550px">
+  </div>
+
+
+  <h3>V8 engine</h3>
+  <div class="text-section">
+    <p>The V8 engine is what converts JavaScript code into machine code that a computer can actually understand.</p>
+    <p>But, that alone is not enough to create a whole server side framework like Node.</p>
+    <P>V8 is Written in JavaScript and C++.</p>
+
+  </div>
+
+  <h3>libuv</h3>
+  <div class="text-section">
+    <p>libuv is needed in addition to V8 to create the server side framework. libuv is an open source library with a
+      strong focus on asynchronous IO.</p>
+    <p>This layer is what gives Node access to the underlying computer operating system, file
+      system, networking, and more.</p>
+    <p>libuv also implements two extremely important features of Node.JS</p>
+
+    <ul>
+      <li><span class="text-object">the event loop</span>: responsible for handling easy tasks like executing call backs
+        and network IO</li>
+      <li><span class="text-object">the thread pool</span>: the event loop is while the thread pool is for more heavy
+        work like file access or
+        compression or something like that.</li>
+    </ul>
+    <p>libuv is completely written in C++.</P>
+  </div>
 
 
 
 
+  <h2>Processes, Threads, and the Thread Pool</h2>
 
-  <h2>Code section</h2>
-  <section class="code-section-container">
-    <div class="code-text-section">
-      <p>......</p>
-    </div>
+  <div class="text-section">
+    <p>Node runs a single process.</p>
+    <p>In this process, Node runs a single thread which can be thought of as a sequence of instructions.</p>
+    <p>When the program is initialized, all the top level code is executed, which means all the code that is not inside
+      any callback function. Also, all the modules that your app needs are required and all the callbacks are
+      registered.</p>
+    <p>Then, the Event Loop starts running. The event loop is where most of the work is done in your app. So, it's
+      really the heart of the entire Node architecture.</p>
+  </div>
 
-    <div class="code-block-section-w60">
-      <pre class="example"><span class="code-nodejs">......    </span></pre>
-    </div>
-  </section>
+  <img src="../../_img/node-processes.png" width="650px">
+
+  <h3>Thread Pool</h3>
+  <div class="text-section">
+    <p>Some tasks are too heavy to be executed in the event loop because they would then block the single thread. That's
+      where the thread pool comes in, which just like the event loop, is provided to Node.js by the libuv library.</p>
+    <p>Node automatically offloads blocking operations into the thread pool, where they don't block the event loop.</p>
+  </div>
+
+
+  <h2>The Event Loop</h2>
+  <div class="text-section">
+    <p>The event loop is the heart of the Node architecture. It is where all the application code that is inside
+      callback functions is executed. So, all code that is not top level code will run in the event loop.</p>
+    <p>The Event Loop is what makes asynchronous programming possible in Node.js, making it the most important feature
+      in Node's design and making Node.js completely different from other platforms.</p>
+
+    <p>It takes care of all incoming events and performs orchestration by offloading heavier tasks into the thread pool,
+      and doing the most simple work itself.</p>
+
+    <p>Node uses Event-Triggered-Architecture.</p>
+    <p>As soon as an event completes, the Event Loop picks them up and calls their callback functions.</p>
+    <p>It's often said that the event loop does the orchestration, which simply means that it receives events, calls
+      their callback functions, and offloads the more expensive tasks to the thread pool.</p>
+    <p>It's very important for you to correctly understand the event loop so that you can write your own performing code
+      and also debug your own code when something goes wrong in an unexpected way.</p>
+
+
+
+    <p>The Event Loop is also needed because in Node.js everything works in one single thread, so you can have thousands
+      or millions
+      of users accessing the same thread at the same time. This makes Node so lightweight and scalable, but at the same
+      time, it comes with the danger of blocking our single thread, which would make the entire app slow or even stop
+      for all your users accessing the app.</p>
+
+    <h4>Guidelines to not block the Event Loop</h4>
+
+    <ul>
+      <li>Don't use the sync versions of functions in the fs, crypto, or zlib modules in your callback functions.</li>
+      <li>Don't perform very complex calculations in the event loop.</li>
+      <li>Be careful with JSON in very large objects because at some point, it can start to take a long time to parse,
+        or to stringify, JSON.</li>
+      <li>Don't use all too complex regular expressions, for example, with multiple nested quantifiers or back
+        references, because again, they can take longer than expected.</li>
+    </ul>
+
+
+  </div>
+  <img src="../../_img/event-loop.png" width="650px">
+
+  <h3>Order callbacks are executed</h3>
+  <div class="text-section">
+    <p>When an application starts, the event loop starts running right away. The event loop has multiple phases, and
+      each phase has a callback queue, which are the callbacks coming from the events that the event loop receives.</p>
+  </div>
+
+  <h3>4 phases</h3>
+
+  <h4>Expired timer callbacks</h4>
+  <div class="text-section">
+    <p>The first phase takes care of callbacks of expired timers, for example, from the <span
+        class="code">setTimeout()</span> function. If there
+      are callback functions from timers that just expired, these are the first ones to be processed by the Event Loop.
+    </p>
+    <p> If a timer expires later during the time when one of the other phases are being processed, then the callback of
+      that timer will only be called as soon as the event loop comes back to this first phase.</p>
+  </div>
+
+  <h4>I/O polling and callbacks</h4>
+  <div class="text-section">
+    <p>Polling means looking for new I/O events that are ready to be processed and putting them into the callback queue.
+    </p>
+    <p>I/O means stuff like networking and file access,so it's in this phase where 99% of code gets executed.</p>
+    <p>This is because in a typical Node app, the bulk of what needs to get done is related to networking and also, file
+      accessing.</p>
+  </div>
+
+  <h4>setImmediate callbacks</h4>
+  <div class="text-section">
+    <p><span class="code">setImmediate</span> is a special kind of timer that processes callbacks immediately after the
+      I/O polling and execution phase.</p>
+  </div>
+
+  <h4>Close callbacks</h4>
+  <div class="text-section">
+    <p>In this phase, all close events are processed, for example, for when a web server or a WebSocket shut down.
+    </p>
+  </div>
+
+
+  <h3>2 additional queues</h3>
+  <div class="text-section">
+    <p>If there are any callbacks in one of these two queues to be processed, they will be executed right after the
+      current 4 phases of the Event Loop finishes.</p>
+  </div>
+
+  <h3>nextTick() queue</h3>
+  <div class="text-section">
+    <p>Used for advanced use cases.</p>
+  </div>
+
+  <h3>microtasks queue</h3>
+  <div class="text-section">
+    <p>Used for resolved promises.</p>
+  </div>
+  <img src="../../_img/event-loop-detail.png" width="650px">
+
 
 
 
