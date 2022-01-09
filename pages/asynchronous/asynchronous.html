@@ -87,7 +87,7 @@ Random dog image saved to file</span></pre>
   <div class="text-section">
     <p>When a Promise starts, it's called a <span class="text-object">Pending Promise</span></p>
     <p>When it's finished, it's called a <span class="text-object">Resolved Promise</span>.</p>
-    <p>A <span class="text-object">Resolved Promise</span> can either be <span class="text-object">Fullfilled</span>
+    <p>A <span class="text-object">Resolved Promise</span> can either be <span class="text-object">fulfilled</span>
       (successful) or <span class="text-object">Rejected</span> (failed).</p>
   </div>
 
@@ -136,7 +136,7 @@ fs.readFile(`${__dirname}/dog.txt`, (err, data) =&gt; {
 
   <h2>then() and catch()</h2>
   <div class="text-section">
-    <p>The <span class="code">then()</span> method only runs if the Promise was Fullfilled.</p>
+    <p>The <span class="code">then()</span> method only runs if the Promise was fulfilled.</p>
     <p>It does nothing happens if it's Rejected.</p>
     <p>You must use <span class="code">catch()</span> to handle Rejected Promises.</p>
   </div>
@@ -167,6 +167,322 @@ fs.readFile(`${__dirname}/dog.txt`, (err, data) =&gt; {
 </span></pre>
     </div>
   </section>
+
+
+
+
+
+
+
+  <h1>Promisifying</h1>
+
+  <div class="text-section">
+    <p>This example Promisifyies the Read and Write file functions.</p>
+    <p>This makes the functions return Promises instead of passing callback functions into them.</p>
+  </div>
+
+  <h2>Promisify the readFile() function</h2>
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <ol>
+        <li>Create a new function named <span class="text-object">readFilePro</span>. This will Promisify the <span
+            class="text-object">readFile()</span> function.</li>
+        <li>Use the <span class="code">new Promise</span> constructor to create a Promise.</li>
+        <li>This constructor takes in an Executor function that is called immediately when the Promise is created. This
+          takes 2 args <ul>
+            <li>resolve</li>
+            <li>reject</li>
+          </ul>These are also functions.</li>
+        <li>The <span class="code">readFile()</span> function is not changed. A new function is created in the
+          background that returns a Promise.</p>
+        </li>
+        <li>If there is an error, call the <span class="code">reject()</span> function. If the Promise is Fulfilled,
+          call the <span class="code">resolve()</span> function.</li>
+        <li><span class="code">readFilePro()</span> returns a Promise. <span class="code">data</span> is what was
+          returned from the fulfilled Promise. You can name <span class="code">data</span> anything you like.</li>
+      </ol>
+
+
+
+
+
+
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+<span class="code-comment">// Pass in a file. Return a Promise.
+// The function takes an Executor function where the asynchronous work is done </span>
+<span class="code-highlight">const readFilePro = (file) =&gt; { </span>
+  <span class="code-comment">// use Promise constructor</span>
+  return <span class="code-highlight">new Promise((resolve, reject) =&gt; { </span>
+
+    <span class="code-comment">// normal callback function </span>
+    fs.readFile(file, (err, data) =&gt; {
+      <span class="code-comment">// call reject function if there's an error
+      // the value passed into reject() is later available in the catch() method </span>
+      if (err) <span class="code-highlight">reject('I could not find that file')</span>;
+      <span class="code-comment">// calling the resolve function marks the Promise as successful
+      // the original value passed into the resolve function is later available the arg in the then() method
+      // data is the value the Promise returns </span>
+      <span class="code-highlight">resolve(data)</span>;
+    });
+  });
+};
+
+<span class="code-comment">// This returns a Promise</span> 
+<span class="code-highlight">readFilePro(`${__dirname}/dog.txt`).then((data) =&gt; { </span>
+  console.log(`Breed: ${data}`);
+
+  superagent
+    .get(`https://dog.ceo/api/breed/${data}/images/random`)
+    .then((res) =&gt; {
+      fs.writeFile('dog-img.txt', res.body.message, (err) =&gt; {
+        console.log('Random dog image saved to file');
+      });
+    })
+    .catch((err) =&gt; {
+      console.log(err.message);
+    });
+});
+</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+
+  <h2>Promisify writeFile() and Chain functions</h2>
+
+  <div class="text-section">
+    <p>This Promisifies the <span class="code">writeFile()</span> function and chains by returning a Promise before each
+      <span class="code">then()</span> handler.
+    </p>
+  </div>
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <ol>
+        <li>Create a variable named <span class="code">writeFilePro</span> to Promisivy the <span
+            class="code">writeFile()</span> function. args are:
+          <ul>
+            <li>the file name</li>
+            <li>the data to be written to the file</li>
+          </ul>
+        </li>
+        <li>Next, Chain functions by returning Promises before chaining with <span class="code">then()</span>.</li>
+        <li><span class="code">readFilePro()</span> returns a Promise, so you can use the <span
+            class="code">then()</span> handler after it.</li>
+        <li><span class="code">get()</span> returns a Promise. To Consume it, add the <span class="code">return</span>
+          statement and close the callback function.</li>
+        <li>You can now chain another <span class="code">then()</span> handler onto it.</li>
+        <li>Add another <span class="code">return</span> statement for the <span class="code">writeFilePro</span>
+          Promise.</li>
+        <li>Finally, chain the last <span class="code">then()</span> handler. There is no value to return, so just leave
+          () empty.</li>
+        <li><span class="code">catch()</span> is always added once at the end to catch any errors.</li>
+      </ol>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+const readFilePro = (file) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    fs.readFile(file, (err, data) =&gt; {  
+      if (err) reject('I could not find that file');
+      resolve(data);
+    });
+  });
+};
+
+<span class="code-comment">// Promisify writeFile()</span>
+<span class="code-highlight">const writeFilePro = (file, data) =&gt; {</span>
+  <span class="code-comment">// Return a Promise with an Executor function (resolve, reject) </span>
+  return new Promise((resolve, reject) =&gt; {
+    <span class="code-comment">// pass in the file, data, and the callback function </span>
+    fs.writeFile(file, data, (err) =&gt; {
+      if (err) reject('Could not write file');
+      <span class="code-comment">// write text since there's no data to return </span>
+      resolve('success');
+    });
+  });
+};
+
+<span class="code-comment">// readFilePro() returns a Promise
+// data is what was returned from the Fulfilled Promise
+// you can name 'data' anything you like</span>
+<span class="code-highlight">readFilePro(`${__dirname}/dog.txt`)
+  .then((data) =&gt; {</span>
+    console.log(`Breed: ${data}`);
+    <span class="code-highlight">return superagent.get(`https://dog.ceo/api/breed/${data}/images/random`);</span>
+  }) <span class="code-comment">// res is the resolved value returned from the previous handler </span>
+  <span class="code-highlight">.then((res) =&gt; {</span>
+    <span class="code-comment">// return so you can continue chaning </span>
+    <span class="code-highlight">return writeFilePro('dog-img.txt', res.body.message);
+  }) <span class="code-comment">// chain another then() handler. No value to return () </span>
+  .then(() =&gt; {</span>
+    console.log('Random dog image saved to file');
+  })
+  .catch((err) =&gt; {
+    console.log(err.message);
+  });
+</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+
+
+  <h1>Async / Await</h1>
+
+  <div class="text-section">
+    <p>To use, you must create an async function using the <span class="code">async</span> keyword.</p>
+    <p>Within an async function, you can have multiple await expressions.</p>
+    <p>This does the same as above but it's much easier to read without all the <span class="code">then()</span>
+      handlers chaining Promises.</p>
+  </div>
+
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p><span class="code">await</span> stops the code until this Promise is resolved.</p>
+      <p>If the Promise is Fulfilled, the value of <span class="code">await</span> is the resolved value of the Promise.
+      </p>
+      <p>This is easier than chaining <span class="code">then()</span> onto the Promise with an argument</p>
+      <p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+const readFilePro = (file) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    fs.readFile(file, (err, data) =&gt; {
+      if (err) reject('I could not find that file');
+      resolve(data);
+    });
+  });
+};
+
+const writeFilePro = (file, data) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    fs.writeFile(file, data, (err) =&gt; {
+      if (err) reject('Could not write file');
+      resolve('success');
+    });
+  });
+};
+
+<span class="code-comment">// async function </span>
+const getDogPic = <span class="code-highlight">async</span> () =&gt; {
+
+  const data = <span class="code-highlight">await</span> readFilePro(`${__dirname}/dog.txt`);
+  console.log(`Breed: ${data}`);
+
+  const res = <span class="code-highlight">await</span> superagent.get(`https://dog.ceo/api/breed/${data}/images/random`);
+  console.log(res.body.message);
+
+  <span class="code-comment">// No need to store in variable since nothing is returned.
+  // You're just waiting for the file to be written </span>
+  <span class="code-highlight">await</span> writeFilePro('dog-img.txt', res.body.message);
+  console.log('Random dog image saved to file');
+};
+
+<span class="code-comment">// call the function </span>
+getDogPic();</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+  <h2>Add try / catch blocks</h2>
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>Since you cannot chain the <span class="code">catch()</span> function with async/await, you can use <span
+          class="text-object">try / catch</span>.</p>
+      <p>Wrap the code in a <span class="code">try</span> block.</p>
+      <p>Add a <span class="code">catch</span> block below.</p>
+      <p>If there's an error in the try block, execution immediately jumps into the catch block which has access to the
+        error that happened.</p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+const readFilePro = (file) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    fs.readFile(file, (err, data) =&gt; {
+      if (err) reject('I could not find that file');
+      resolve(data);
+    });
+  });
+};
+
+const writeFilePro = (file, data) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    fs.writeFile(file, data, (err) =&gt; {
+      if (err) reject('Could not write file');
+      resolve('success');
+    });
+  });
+};
+
+<span class="code-comment">// async function </span>
+const getDogPic = async () =&gt; {
+  <span class="code-comment">// Add try block </span>
+  <span class="code-highlight">try { </span>
+    const data = await readFilePro(`${__dirname}/dog.txt`);
+    console.log(`Breed: ${data}`);
+
+    const res = await superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`);
+    console.log(res.body.message);
+
+    await writeFilePro('dog-img.txt', res.body.message);
+    console.log('Random dog image saved to file');
+  <span class="code-highlight">} catch (err) {
+    console.log(err.message);
+  } </span>
+};
+
+// call the function
+getDogPic();
+</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
