@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" type="text/css" href="../../_css/styles.css">
+
+  <title>Asynchronous</title>
+</head>
+
+<body>
+
+
+  <nav class="navbar">
+    <a href="../../index.html">Back to homepage</a>
+    <a class="nav-page nav-active">Asynchronous</a>
+  </nav>
+
+
+
+
+
+  <h1>Callback within a callback</h1>
+  <div class="notebox-warning">
+    <p>This is a simple example of 'Callback Hell'.</p>
+    <p>It can get very difficult to read the more callbacks that are written within other callbacks.</p>
+  </div>
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>This uses the dog.ceo/api and the <span class="text-object">superagent</span> module.</p>
+      <p>The <span class="text-object">dog.txt</span> file is read. The data in it is printed to the terminal.</p>
+      <p>A get request is made to the <span class="text-object">dog.ceo/api</span>. The response body is returend.</p>
+      <p>View the <span class="text-object">dog.ceo/dpg-api</span> page and you'll see the response body contains
+        <span class="code">message</span> and
+        <span class="code">status</span> properties.
+      </p>
+      <p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+fs.readFile(`${__dirname}/dog.txt`, (err, data) =&gt; {
+  console.log(`Breed: ${data}`);
+
+  <span class="code-comment">// get request
+  // must use end() method to retrieve data. Pass in the callback function </span>
+  superagent
+    .get(`https://dog.ceo/api/breed/${data}/images/random`).end((err, res) =&gt; {
+      <span class="code-comment">// return immediately if the breed is misspelled </span>
+      if (err) return console.log(err.message);
+
+      <span class="code-comment">// data you get back is in the res variable </span>
+      console.log(res.body);
+
+      <span class="code-comment">// callback within the first callback </span>
+      fs.writeFile('dog-img.txt', res.body.message, (err) => {
+      console.log('Random dog image saved to file');
+      });
+    });
+});
+</span></pre>
+    </div>
+  </section>
+
+  <section class="output-section-container">
+    <h5>Output</h5>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-output">Breed: labrador
+{
+  message: 'https://images.dog.ceo/breeds/labrador/n02099712_6644.jpg',
+  status: 'success'
+}
+Random dog image saved to file</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+  <h1>Promises</h1>
+  <div class="text-section">
+    <p>When a Promise starts, it's called a <span class="text-object">Pending Promise</span></p>
+    <p>When it's finished, it's called a <span class="text-object">Resolved Promise</span>.</p>
+    <p>A <span class="text-object">Resolved Promise</span> can either be <span class="text-object">Fullfilled</span>
+      (successful) or <span class="text-object">Rejected</span> (failed).</p>
+  </div>
+
+
+
+
+  <h2>Promises (simple example)</h2>
+
+  <div class="text-section">
+    <p>A Promise represents a value you'll receive in the future.</p>
+    <p>It's like asking the server to do something for you and give it back to you whenever it's finished.</p>
+  </div>
+
+
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>This example nests the 2nd callback into a Promise.</p>
+      <p>In this example, the image is something we expect back in the future.</p>
+      <p>This uses a Promise for the http callback.</p>
+      <p>Use the <span class="code">then()</span> method to Consume the Promise data that's returned.</p>
+      <p><span class="code">then()</span> takes a callback function. The data returned is then available as an
+        argument to the callback. In this example, it's named <span class="code">res</span>. </p>
+      <p>You can also remove the <span class="code">end()</span> code.</p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+fs.readFile(`${__dirname}/dog.txt`, (err, data) =&gt; {
+  console.log(`Breed: ${data}`);
+
+  superagent
+    .get(`https://dog.ceo/api/breed/${data}/images/random`)
+    <span class="code-highlight">.then((res) =&gt; {
+      if (err) return console.log(err.message);
+
+      fs.writeFile('dog-img.txt', res.body.message, (err) =&gt; {
+        console.log('Random dog image saved to file');
+      }); </span>
+    });
+});</span></pre>
+    </div>
+  </section>
+
+
+  <h2>then() and catch()</h2>
+  <div class="text-section">
+    <p>The <span class="code">then()</span> method only runs if the Promise was Fullfilled.</p>
+    <p>It does nothing happens if it's Rejected.</p>
+    <p>You must use <span class="code">catch()</span> to handle Rejected Promises.</p>
+  </div>
+
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>Chain the <span class="code">catch()</span> method after the <span class="code">then()</span> code block.</p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+fs.readFile(`${__dirname}/dog.txt`, (err, data) =&gt; {
+  console.log(`Breed: ${data}`);
+
+  superagent
+    .get(`https://dog.ceo/api/breed/${data}/images/random`)
+    .then((res) =&gt; {
+      fs.writeFile('dog-img.txt', res.body.message, (err) =&gt; {
+        console.log('Random dog image saved to file');
+      });
+    })
+    <span class="code-highlight">.catch((err) =&gt; {
+      console.log(err.message);
+    }); </span>
+});
+</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+
+
+
+
+
+
+</body>
+
+</html>

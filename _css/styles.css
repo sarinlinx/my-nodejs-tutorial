@@ -36,7 +36,6 @@ body {
   padding: 1rem 4rem;
   font-family: 'Lora', serif;
   font-weight: 400;
-  /* line-height: 2; */
   background-color: #1f2833;
   color: #c5c6c7;
   /* gradient, comma, then image */
@@ -122,7 +121,7 @@ h1 {
   margin-top: 3rem;
   margin-bottom: 20px;
   border-bottom: 2px solid #776a6a;
-  font-size: 3rem;
+  font-size: 2.7rem;
   background: linear-gradient(to bottom, #64de64 0%, #2f8c00 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -263,7 +262,7 @@ ___________________________________________________*/
 .code-section-container {
   display: flex;
   padding: 1rem;
-  margin-bottom: 2rem;
+  margin-bottom: 2rem 1rem;
   background-color: rgba(25, 25, 25, .5);
   color: #b0cad4;
   /* border: 1px solid red; */
@@ -271,17 +270,9 @@ ___________________________________________________*/
   /* font-size: 15px; */
 }
 
-.output-section-container {
-  display: flex;
-  padding: 1rem;
-  margin-bottom: 2rem;
-  background-color: rgba(25, 25, 25, .5);
-  color: #b0cad4;
-  /* border: 1px solid red; */
-  justify-content: space-between
+.code-text-section {
+  line-height: 22px;
 }
-
-.code-text-section {}
 
 .code-block-section-w60 {
   min-width: 500px;
@@ -303,6 +294,16 @@ ___________________________________________________*/
   overflow: auto;
 }
 
+.output-section-container {
+  display: flex;
+  padding: 1rem;
+  margin-bottom: 2rem;
+  background-color: rgba(25, 25, 25, .5);
+  color: #b0cad4;
+  /* border: 1px solid red; */
+  justify-content: space-between;
+  line-height: 18px;
+}
 
 /*___________________________________________________
 Code Examples
@@ -358,7 +359,7 @@ ___________________________________________________*/
   background-color: #000;
   border: 1px solid #b2cdff;
   border-radius: 2px;
-  padding: 1px 4px;
+  padding: 0 2px;
   white-space: nowrap;
 }
 
