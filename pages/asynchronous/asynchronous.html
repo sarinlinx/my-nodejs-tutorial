@@ -468,6 +468,228 @@ getDogPic();
 
 
 
+  <h2>Returning values form async functions</h2>
+
+  <h3>pending Promises</h3>
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>async functions automatically return a Promise.</p>
+      <p>In this example, a variable <span class="code">x</span> is assigned to the function call.</p>
+      <p>Its value is then printed to the screen.</p>
+      <p>Since the Promise is asynchronous, it's working in the background. So the console prints <span
+          class="text-object">Promise { &ltppending&gt; }</span>.</p>
+      <p>The result of the function then prints.</p>
+      <p>The final return is never printed.</p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+const readFilePro = (file) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, (err, data) => {
+      if (err) reject('I could not find that file');
+      resolve(data);
+    });
+  });
+};
+
+const writeFilePro = (file, data) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(file, data, (err) => {
+      if (err) reject('Could not write file');  
+      resolve('success');
+    });
+  });
+};
+
+// async function
+const getDogPic = async () => {  
+  try {
+    const data = await readFilePro(`${__dirname}/dog.txt`);
+    console.log(`Breed: ${data}`);
+
+    const res = await superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+    console.log(res.body.message);
+    await writeFilePro('dog-img.txt', res.body.message);
+    console.log('Random dog image saved to file');
+  } catch (err) {
+    console.log(err.message);
+  }
+  return '2: ready';
+};
+
+<span class="code-highlight">const x = getDogPic();
+console.log(x);</span></span></pre>
+    </div>
+  </section>
+
+
+  <section class="output-section-container">
+    <h5>Output</h5>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-output">Promise { &lt;pending&gt; }
+Breed: labrador
+https://images.dog.ceo/breeds/labrador/n02099712_389.jpg
+Random dog image saved to file
+</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+  <h2>How to print he final return value</h2>
+
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>If you want to print the last return statement, you need to get access to the Promises return value.</p>
+      <p>Since <span class="code">getDogPic()</span> is a Promise, you can add <span class="code">then()</span> to get
+        access to its future value.</p>
+      <p>When run, the output of the Promise displays normally. At the end, the final return statement displays.</p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+const readFilePro = (file) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, (err, data) => {
+      if (err) reject('I could not find that file');
+      resolve(data);
+    });
+  });
+};
+
+const writeFilePro = (file, data) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(file, data, (err) => {
+      if (err) reject('Could not write file');  
+      resolve('success');
+    });
+  });
+};
+
+// async function
+const getDogPic = async () => {  
+  try {
+    const data = await readFilePro(`${__dirname}/dog.txt`);
+    console.log(`Breed: ${data}`);
+
+    const res = await superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+    console.log(res.body.message);
+    await writeFilePro('dog-img.txt', res.body.message);
+    console.log('Random dog image saved to file');
+  } catch (err) {
+    console.log(err.message);
+  }
+  return '2: ready';
+};
+
+<span class="code-highlight"><span class="code-comment">// getDogPic() returns a Promise
+// So, you can add then() to get access to its future value </span>
+getDogPic().then((x) => {
+  console.log(x);
+});</span></span></pre>
+    </div>
+  </section>
+
+
+
+
+
+
+  <section class="output-section-container">
+    <h5>Output</h5>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-output">Breed: labrador
+https://images.dog.ceo/breeds/labrador/n02099712_389.jpg
+Random dog image saved to file
+2: ready</span></pre>
+    </div>
+  </section>
+
+
+
+
+
+  <h2>Throw an error</h2>
+
+  <div class="text-section">
+    <p>The problem with the code above is that even if there is an error, the <span class="code">then()</span> method is
+      entered instead, so no errors are caught. This is because it resolves as a FulFilled Promise.</p>
+    <p>This example uses an IIFE and a try/catch block to print the error.</p>
+  </div>
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>To cause the Promise to catch an error, you must <span class="text-object">throw</span> an error.</p>
+      <p>If an error is found, <span class="code">throw(err)</span> marks the entire Promise as rejected.</p>
+      <p>This allows the final <span class="code">catch</span> block to be entered and print the error.</p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+
+const readFilePro = (file) => {
+  return new Promise((resolve, reject) => {
+    fs.readFile(file, (err, data) => {
+      if (err) reject('I could not find that file');
+      resolve(data);
+    });
+  });
+};
+
+const writeFilePro = (file, data) => {
+  return new Promise((resolve, reject) => {
+    fs.writeFile(file, data, (err) => {
+      if (err) reject('Could not write file');  
+      resolve('success');
+    });
+  });
+};
+
+// async function
+const getDogPic = async () => {  
+  try {
+    const data = await readFilePro(`${__dirname}/dog.txt`);
+    console.log(`Breed: ${data}`);
+
+    const res = await superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+    console.log(res.body.message);
+    await writeFilePro('dog-img.txt', res.body.message);
+    console.log('Random dog image saved to file');
+  } catch (err) {
+    console.log(err.message);
+    <span class="code-highlight">throw err;</span>
+  }
+  return '2: ready';
+};
+
+<span class="code-highlight"><span class="code-comment">// Create an IIFE </span>
+(async () => {
+  try {
+    console.log('Testing 1');   
+    <span class="code-comment">// getDogPic() is an async function, so it returns a Promise
+    // the resolved value is the final return statement
+    // this awaits the final return statement </span>
+    const x = await getDogPic();
+    console.log(x);
+  } catch (err) {
+    console.log('ERROR');
+  }
+})();</span></pre>
+    </div>
+  </section>
 
 
 
@@ -475,6 +697,91 @@ getDogPic();
 
 
 
+
+
+
+
+  <h2>Waiting for multiple Promises</h2>
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>Remove <span class="code">await</span> from the image call.</p>
+      <p>Save each to a variable.</p>
+      <p>Create a variable to store a new Promise named <span class="code">all</span>. This stores them all in an Array.
+      </p>
+      <p>Use <span class="code">map</span> to add them to a new variable named <span class="code">imgs</span>.</p>
+      <p>Finally, use <span class="code">join('\n')</span> to print them to the file on new lines.</p>
+      <p>This saves 3 images into an Array.</p>
+      <p>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const superagent = require('superagent');
+const readFilePro = (file) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    fs.readFile(file, (err, data) =&gt; {
+      if (err) reject('I could not find that file');
+      resolve(data);
+    });
+  });
+};
+
+const writeFilePro = (file, data) =&gt; {
+  return new Promise((resolve, reject) =&gt; {
+    fs.writeFile(file, data, (err) =&gt; {
+      if (err) reject('Could not write file');
+      resolve('success');
+    });
+  });
+};
+
+const getDogPic = async () =&gt; {
+  try {
+    const data = await readFilePro(`${__dirname}/dog.txt`);
+    console.log(`Breed: ${data}`);
+
+    <span class="code-highlight"><span class="code-comment">// do not await it yet. Save it to variable </span>
+    const res1Pro = superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+
+    const res2Pro = superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+
+    const res3Pro = superagent.get(
+      `https://dog.ceo/api/breed/${data}/images/random`
+    );
+
+    <span class="code-comment">// get resolved values of all 3 images
+    // Create a Promise and await all 3 in an Array </span>
+    const all = await Promise.all([res1Pro, res2Pro, res3Pro]);
+    <span class="code-comment">// read only the body.message property of the 3 images </span>
+    const imgs = all.map((el) =&gt; el.body.message);
+    console.log(imgs);
+
+    <span class="code-comment">// print them on new lines using join('\n') </span>
+    await writeFilePro('dog-img.txt', imgs.join('\n')); </span>
+    console.log('Random dog image saved to file');
+  } catch (err) {
+    console.log(err.message);
+    throw err;
+  }
+  return '2: ready';
+};
+
+// Create an IIFE
+(async () =&gt; {
+  try {
+    console.log('Testing 1');
+    const x = await getDogPic();
+    console.log(x);
+  } catch (err) {
+    console.log('ERROR');
+  }
+})();</span></pre>
+    </div>
+  </section>
 
 
 
