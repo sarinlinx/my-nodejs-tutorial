@@ -134,13 +134,12 @@ h2 {
   background: linear-gradient(to bottom, #daf6ff 0%, #0074c9 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  display: inline-block;
 }
 
 h3 {
-  margin-top: 1rem;
+  margin-bottom: 0;
   font-size: 1.7rem;
-  background: linear-gradient(to bottom, #ffffff 0%, #9100ff 100%);
+  background: linear-gradient(to bottom, #869fff 0%, #b446ff 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
