@@ -282,6 +282,115 @@ app.listen(port, () =&gt; {
 
 
 
+  <h1>Respond to URL parameters</h1>
+  <h2>Retrieve a specific page of data</h2>
+
+  <div class="text-section">
+    <p>This retrieves a specific Object in the <span class="code">tours</spaN> Array when a request is made to a
+      specific page ID#.</p>
+  </div>
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <ol>
+        <li>Create a new <span class="code">get()</span> section that will respond to a URL with an ID#.</li>
+        <li>Add <span class="code">/:id</span> to the request URL as an argument.</li>
+        <li>The variable argument is a string at first. Convert it to a number by multiplying by 1.</li>
+        <li>Create a variable named <span class="code">tour</span>. This will be a new Array created by <span
+            class="code">tours.find()</span>. If the ID# matches the Object within the <span class="code">tours</span>
+          Array, it is <span class="code">true</span> and saved.</li>
+        <li>Add an if statement to check if the ID# exists. If it's too high, a 404 error is returned.</li>
+        <li>Send the response.</li>
+      </ol>
+      <p>In Postman, open the URL <span class="text-object">127.0.0.1:3000/api/v1/tours/2</span> to see the returned
+        Object with an ID# of 2.</p>
+
+
+    </div>
+
+
+
+
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs">const fs = require('fs');
+const express = require('express');
+const app = express();
+
+app.use(express.json());
+
+const tours = JSON.parse(
+  fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`)
+);
+
+app.get('/api/v1/tours', (req, res) =&gt; {
+  res.status(200).json({
+    status: 'success',
+    results: tours.length,
+    data: {
+      tours: tours
+    }
+  });
+});
+
+<span class="code-comment">// Respond to specific page
+// add :id to the URL
+// Whatever the user enters into the URL here is set as the ID# </span>
+<span class="code-highlight">app.get('/api/v1/tours/:id', (req, res) =&gt; { </span>
+  <span class="code-comment">// first, convert the string to a number so you can work with it
+  // It automatically converts when you multiply it by 1 </span>
+  <span class="code-highlight">const id = req.params.id * 1; </span>
+  
+  <span class="code-comment">// find() loops through Array. Each iteration you have access to the current element.
+  // find() takes a callback function
+  // It then creates a new Array with only elements that are true
+  // This checks if the id# matches the parameter sent </span>
+  <span class="code-highlight">const tour = tours.find(el =&gt; el.id === id);</span>
+  
+  <span class="code-comment">// Check if ID# entered does not exist in the Array </span>
+  <span class="code-highlight">if (!tours) {
+    // immediately return a 404
+    return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID'
+    });
+  }</span>
+
+  <span class="code-comment">// send response</span>
+  <span class="code-highlight">res.status(200).json({
+    status: 'success',
+    data: {
+      tour: tour
+    } 
+  });</span>
+});
+
+app.post('/api/v1/tours', (req, res) =&gt; {
+  const newId = tours[tours.length - 1].id + 1;
+  const newTour = Object.assign({ id: newId }, req.body);
+
+  tours.push(newTour);
+  fs.writeFile(
+    `${__dirname}/dev-data/data/tours-simple.json`,
+    JSON.stringify(tours),
+    err =&gt; {
+      res.status(201).json({
+        status: 'success',
+        data: {
+          tour: newTour
+        }
+      });
+    }
+  );
+});
+
+const port = 3000;
+
+app.listen(port, () =&gt; {
+  console.log('App running');
+});
+</span></pre>
+    </div>
+  </section>
 
 
 
@@ -292,7 +401,84 @@ app.listen(port, () =&gt; {
 
 
 
+  <h1>Handling PATCH request</h1>
+  <div class="text-section">
+    <p>Then sends a <span class="code">PATCH</span> request.</p>
+    <p>This would update a specific property in the data Array Object.</p>
+    <p>This example only shows how it would be created. It does not actually write to anything.</p>
+  </div>
 
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>Add this section under the current <span class="code">POST</span> request block.</p>
+      <ol>
+        <li>Use <span class="code">app.path()</span> to create a <span class="code">PATCH</span> request.</li>
+        <li>This takes an <span class="code">:id</span> variable to the URL.</li>
+        <li>Multiply the param value by 1 to convert to a number. Then check if that number is greater than the length
+          of the Array.</li>
+        <li>If so, return a 404 error.</li>
+        <li>If not, send the request.</li>
+      </ol>
+      <p>Finally, make a request in Postman.</p>
+      <img src="../../_img/postman-patch.png" width="550px">
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs"><span class="code-comment">// PATCH </span>
+<span class="code-highlight">app.patch('/api/v1/tours/:id', (req, res) => {</span>
+
+  <span class="code-comment">// immediately return a 404 if ID# invalid</span>
+  <span class="code-highlight">if (req.params.id * 1 > tours.length) { 
+      return res.status(404).json({
+      status: 'fail',
+      message: 'Invalid ID'
+    });
+  }
+
+  res.status(200).json({
+    status: 'success',
+    data: {
+      tour: '<Updated tour here...>'
+    }
+  });
+});</span></span></pre>
+    </div>
+  </section>
+
+
+
+
+
+  <h1>Delete</h1>
+
+  <section class="code-section-container">
+    <div class="code-text-section">
+      <p>This is similar to <span class="code">PATCH</span> with the following changes.</p>
+      <ol>
+        <li><span class="code">app.delete()</span> is used.</li>
+        <li>A 204 status is returned.</li>
+        <li>The data sent is <span class="code">null</span>.</li>
+      </ol>
+    </div>
+    <div class="code-block-section-w60">
+      <pre class="example"><span class="code-nodejs"><span class="code-comment">// DELETE </span>
+app.<span class="code-highlight">delete</span>('/api/v1/tours/:id', (req, res) => {
+
+  <span class="code-comment">// immediately return a 404 if ID# invalid</span>
+  if (req.params.id * 1 > tours.length) {    
+    return res.status(404).json({
+      status: 'success',
+      message: 'Invalid ID'
+    });
+  }
+
+  <span class="code-comment">// 204 means NO CONTENT </span>
+  res.status(<span class="code-highlight">204</span>).json({
+    status: 'success',
+    data: <span class="code-highlight">null</span>
+  });
+});</span></pre>
+    </div>
+  </section>
 
 
 
